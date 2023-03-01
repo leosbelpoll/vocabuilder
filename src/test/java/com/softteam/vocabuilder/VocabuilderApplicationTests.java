@@ -1,4 +1,4 @@
-package com.example.vocabuilder;
+package com.softteam.vocabuilder;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
