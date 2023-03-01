@@ -3,15 +3,16 @@ package com.softteam.vocabuilder.service;
 import com.softteam.vocabuilder.persistence.entity.Category;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ICategoryService {
 
     Category create(Category category);
 
-    Category update(Category category);
+    void update(Category category);
 
-    Category read(Long id);
+    Optional<Category> read(Long id);
 
-    Category delete(Long id);
+    void delete(Long id);
 
 }
