@@ -1,6 +1,7 @@
 package com.softteam.vocabuilder.persistence.entity;
 
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,5 +31,21 @@ public class Vocabulary {
     private Date createdAt;
 
     @Column(name = "updatedAt", nullable = false)
+=======
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Data
+@Entity
+@Table(name = "vocabulary")
+public class Vocabulary {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String title;
+    private String description;
+    private Date createdAt;
+>>>>>>> f93a88afac596b8434e4aa7a030f67215dee11fc
     private Date updatedAt;
 }
