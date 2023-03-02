@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements ICategoryService{
     public void update(Category category) {
         try {
             categoryRepository.save(category);
-        }catch (Exception e){
+        }catch (EntityNotFoundException e){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
     }
