@@ -4,6 +4,7 @@ import com.softteam.vocabuilder.persistence.entity.Category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ICategoryService {
 
@@ -11,8 +12,8 @@ public interface ICategoryService {
 
     void update(Category category);
 
-    Optional<Category> read(Long id);
+    Optional<Category> read(UUID id);
 
-    void delete(Long id);
+    void delete(UUID id);
 
 }
