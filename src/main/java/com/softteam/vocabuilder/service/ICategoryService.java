@@ -12,7 +12,9 @@ public interface ICategoryService {
 
     void update(Category category);
 
-    Optional<Category> read(UUID id);
+    Optional<Category> getCategory(UUID id);
+
+    List<Category> findAllCategories();
 
     void delete(UUID id);
 

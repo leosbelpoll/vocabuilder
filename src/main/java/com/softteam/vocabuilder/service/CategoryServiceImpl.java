@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,25 +20,33 @@ public class CategoryServiceImpl implements ICategoryService{
 
     @Override
     public Category create(Category category) {
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
+        List<Category> categoryList = categoryRepository.findAll();
+        System.out.println("categoryList"+category.getId());
+        return category;
     }
 
     @Override
     public void update(Category category) {
-        Optional<Category> category1 = categoryRepository.findById(category.getId());
-        if(category1.isEmpty()){
+        try {
+            categoryRepository.save(category);
+        }catch (Exception e){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
-        categoryRepository.save(category);
     }
 
     @Override
-    public Optional<Category> read(UUID id) {
+    public Optional<Category> getCategory(UUID id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
         return optionalCategory;
+    }
+
+    @Override
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAll();
     }
 
     @Override

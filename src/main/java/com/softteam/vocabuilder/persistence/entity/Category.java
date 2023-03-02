@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,10 +16,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "categorys")
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue
+    @Type(type = "uuid-char")
     private UUID id;
 
     @Column(name = "title",nullable = false)

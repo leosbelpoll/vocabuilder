@@ -9,12 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.MapsId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/categories")
-
 public class CategoryController {
 
     @Autowired
@@ -35,8 +35,13 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Category>> getCategory(@PathVariable(value = "id") UUID id){
-        Optional<Category> category = categoryService.read(id);
+        Optional<Category> category = categoryService.getCategory(id);
         return new ResponseEntity<Optional<Category>>(category,HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Category>> listCategories(){
+        return new ResponseEntity<List<Category>>(categoryService.findAllCategories(),HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
