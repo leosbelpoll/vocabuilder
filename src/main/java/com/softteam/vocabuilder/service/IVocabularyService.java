@@ -11,7 +11,7 @@ public interface IVocabularyService {
 
     void update(Vocabulary vocabulary);
 
-    Optional getVocabulary(UUID id);
+    Optional getVocabulary(String id);
 
     List<Vocabulary> findAllVocabularies();
 

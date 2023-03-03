@@ -34,7 +34,7 @@ public class VocabularyController {
     }
 
      @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vocabulary>> readVocabulary(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Optional<Vocabulary>> readVocabulary(@PathVariable(value = "id") String id){
         Optional<Vocabulary> vocabulary = vocabularyServiceImp.getVocabulary(id);
         return new ResponseEntity<Optional<Vocabulary>>(vocabulary,HttpStatus.OK);
     }
