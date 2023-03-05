@@ -26,6 +26,7 @@ public class VocabularyController {
         vocabularyServiceImp.create(vocabulary);
         return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
     }
+    
     @PutMapping("/{id}")
     public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable(value = "id")UUID id, @RequestBody Vocabulary vocabulary){
         vocabulary.setId(id);
@@ -34,7 +35,7 @@ public class VocabularyController {
     }
 
      @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vocabulary>> readVocabulary(@PathVariable(value = "id") String id){
+    public ResponseEntity<Optional<Vocabulary>> getVocabulary(@PathVariable(value = "id") String id){
         Optional<Vocabulary> vocabulary = vocabularyServiceImp.getVocabulary(id);
         return new ResponseEntity<Optional<Vocabulary>>(vocabulary,HttpStatus.OK);
     }
@@ -45,7 +46,7 @@ public class VocabularyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") String id){
         vocabularyServiceImp.delete(id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

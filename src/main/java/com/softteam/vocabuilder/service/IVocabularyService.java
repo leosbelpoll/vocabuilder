@@ -15,6 +15,6 @@ public interface IVocabularyService {
 
     List<Vocabulary> findAllVocabularies();
 
-    void delete(UUID id);
+    void delete(String id);
 
 }

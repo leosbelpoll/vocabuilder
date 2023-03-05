@@ -4,6 +4,7 @@ import com.softteam.vocabuilder.exections.VocabularyIllegalArgumentException;
 import com.softteam.vocabuilder.exections.VocabularyNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
 import com.softteam.vocabuilder.persistence.repository.VocabularyRepository;
+import com.softteam.vocabuilder.util.validations.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,26 +19,28 @@ public class VocabularyServiceImp implements IVocabularyService {
     @Autowired
     private VocabularyRepository vocabularyRepository;
 
+    @Autowired
+    private Validations validations;
+
     @Override
     public Vocabulary create(Vocabulary vocabulary) {
         return vocabularyRepository.save(vocabulary);
     }
 
-    @Transactional
-    @Override
-    public void update(Vocabulary vocabulary) {
+    public void update2(Vocabulary vocabulary) {
         Optional<Vocabulary> vocabulary1 = vocabularyRepository.findById(vocabulary.getId());
         if (vocabulary1.isEmpty()) {
             throw new VocabularyNotFoundException("vocabulary not found", HttpStatus.NOT_FOUND);
         }
         vocabularyRepository.save(vocabulary);
     }
-
-    public void update2(Vocabulary vocabulary) {
+    @Transactional
+    @Override
+    public void update(Vocabulary vocabulary) {
         try {
             Optional<Vocabulary> updatedCategory = Optional.of(vocabularyRepository.save(vocabulary));
             if (!updatedCategory.isPresent()) {
-                throw new VocabularyNotFoundException("Category not found", HttpStatus.NOT_FOUND);
+                throw new VocabularyNotFoundException("vocabulary not found", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             throw new RuntimeException();
@@ -46,15 +49,10 @@ public class VocabularyServiceImp implements IVocabularyService {
 
     @Override
     public Optional<Vocabulary> getVocabulary(String id) {
-        Optional<Vocabulary> optionalVocabulary = Optional.of(new Vocabulary());
-        try {
-
-            optionalVocabulary = vocabularyRepository.findById(UUID.fromString(id));
-        } catch (IllegalArgumentException e) {
-            throw new VocabularyIllegalArgumentException("the id provided is not valid", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        UUID uuidID = validations.validateUUIDType(id);
+        Optional<Vocabulary> optionalVocabulary = vocabularyRepository.findById(uuidID);
         if (optionalVocabulary.isEmpty()) {
-            throw new VocabularyNotFoundException("Category not found", HttpStatus.NOT_FOUND);
+            throw new VocabularyNotFoundException("vocabulary not found", HttpStatus.NOT_FOUND);
         }
         return optionalVocabulary;
     }
@@ -66,10 +64,11 @@ public class VocabularyServiceImp implements IVocabularyService {
 
     @Transactional
     @Override
-    public void delete(UUID id) {
-        if (vocabularyRepository.findById(id).isEmpty()) {
+    public void delete(String id) {
+        UUID uuidID = validations.validateUUIDType(id);
+        if (vocabularyRepository.findById(uuidID).isEmpty()) {
             throw new VocabularyNotFoundException("vocabulary not found", HttpStatus.NOT_FOUND);
         }
-        vocabularyRepository.deleteById(id);
+        vocabularyRepository.deleteById(uuidID);
     }
 }
