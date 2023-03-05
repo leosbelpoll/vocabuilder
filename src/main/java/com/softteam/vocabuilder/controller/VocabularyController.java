@@ -26,7 +26,7 @@ public class VocabularyController {
         vocabularyServiceImp.create(vocabulary);
         return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable(value = "id")UUID id, @RequestBody Vocabulary vocabulary){
         vocabulary.setId(id);
