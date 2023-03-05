@@ -1,6 +1,5 @@
 package com.softteam.vocabuilder.service;
 
-import com.softteam.vocabuilder.exections.VocabularyIllegalArgumentException;
 import com.softteam.vocabuilder.exections.VocabularyNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
 import com.softteam.vocabuilder.persistence.repository.VocabularyRepository;

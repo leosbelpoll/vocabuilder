@@ -3,6 +3,7 @@ package com.softteam.vocabuilder.service;
 import com.softteam.vocabuilder.exections.CategoryNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.persistence.repository.CategoryRepository;
+import com.softteam.vocabuilder.util.validations.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class CategoryServiceImpl implements ICategoryService{
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private Validations validations;
 
     @Override
     public Category create(Category category) {
@@ -36,8 +40,9 @@ public class CategoryServiceImpl implements ICategoryService{
     }
 
     @Override
-    public Optional<Category> getCategory(UUID id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
+    public Optional<Category> getCategory(String id) {
+        UUID uuidID = validations.validateUUIDType(id);
+        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
@@ -50,11 +55,12 @@ public class CategoryServiceImpl implements ICategoryService{
     }
 
     @Override
-    public void delete(UUID id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
+    public void delete(String id) {
+        UUID uuidID = validations.validateUUIDType(id);
+        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
-        categoryRepository.deleteById(id);
+        categoryRepository.deleteById(uuidID);
     }
 }

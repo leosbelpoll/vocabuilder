@@ -1,6 +1,6 @@
 package com.softteam.vocabuilder.util.validations;
 
-import com.softteam.vocabuilder.exections.VocabularyIllegalArgumentException;
+import com.softteam.vocabuilder.exections.VocabuilderIllegalArgumentException;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class Validations {
         try {
             uuidText = UUID.fromString(parameter);
         } catch (Exception e) {
-            throw new VocabularyIllegalArgumentException("validation - the id provided is not valid", HttpStatus.NOT_FOUND);
+            throw new VocabuilderIllegalArgumentException("validation - the id provided is not valid", HttpStatus.NOT_FOUND);
         }
         return uuidText;
     }
