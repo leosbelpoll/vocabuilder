@@ -35,7 +35,7 @@ public class Category {
     @Column(name = "createdAt",nullable = false)
     private Date createdAt;
 
-    @Column(name = "updatedAt",nullable = true)
+    @Column(name = "updatedAt",nullable = false)
     private Date updatedAt;
 
 }

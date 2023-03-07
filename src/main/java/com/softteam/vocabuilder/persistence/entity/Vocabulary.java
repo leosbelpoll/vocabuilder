@@ -18,16 +18,15 @@ public class Vocabulary {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description",nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "createdAt",nullable = false)
+    @Column(name = "createdAt", nullable = false)
     private Date createdAt;
 
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
-
 }
