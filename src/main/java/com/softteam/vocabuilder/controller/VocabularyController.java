@@ -76,7 +76,7 @@ public class VocabularyController {
     @GetMapping
     public ResponseEntity<List<Vocabulary>> listVocabulary() {
         List<Vocabulary> vocabularyList = vocabularyServiceImp.findAllVocabularies();
-        return new ResponseEntity<List<Vocabulary>>(vocabularyServiceImp.findAllVocabularies(), HttpStatus.OK);
+        return new ResponseEntity<List<Vocabulary>>(vocabularyList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
