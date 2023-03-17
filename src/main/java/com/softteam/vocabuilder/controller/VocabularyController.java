@@ -33,32 +33,32 @@ public class VocabularyController {
         vocabulary.setCreatedAt(new Date());
         vocabulary.setUpdatedAt(new Date());
 
-        vocabularyServiceImp.create(vocabulary);
-        return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
+        Vocabulary newVocabulary = vocabularyServiceImp.create(vocabulary);
+        return new ResponseEntity<Vocabulary>(newVocabulary,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable(value = "id") String id, @RequestBody Vocabulary vocabulary) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabulary1 = Optional.of(new Vocabulary());
+        Optional<Vocabulary> vocabularyOptional = Optional.of(new Vocabulary());
         try {
-            vocabulary1 = vocabularyServiceImp.getVocabulary(uuidID);
+            vocabularyOptional = vocabularyServiceImp.getVocabulary(uuidID);
         } catch (RuntimeException e) {
             throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (vocabulary.getTitle() == null) {
-            vocabulary.setTitle(vocabulary1.get().getTitle());
+            vocabulary.setTitle(vocabularyOptional.get().getTitle());
         }
         if (vocabulary.getDescription() == null) {
-            vocabulary.setDescription(vocabulary1.get().getDescription());
+            vocabulary.setDescription(vocabularyOptional.get().getDescription());
         }
         vocabulary.setId(uuidID);
-        vocabulary.setCreatedAt(vocabulary1.get().getCreatedAt());
+        vocabulary.setCreatedAt(vocabularyOptional.get().getCreatedAt());
         vocabulary.setUpdatedAt(new Date());
 
         System.out.println("Datos del vocabulary" + vocabulary);
-        vocabularyServiceImp.update(vocabulary);
-        return new ResponseEntity<Vocabulary>(HttpStatus.OK);
+        Vocabulary updateVocabulary = vocabularyServiceImp.update(vocabulary);
+        return new ResponseEntity<Vocabulary>(updateVocabulary,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
