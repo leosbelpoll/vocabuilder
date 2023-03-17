@@ -76,9 +76,6 @@ public class VocabularyController {
     @GetMapping
     public ResponseEntity<List<Vocabulary>> listVocabulary() {
         List<Vocabulary> vocabularyList = vocabularyServiceImp.findAllVocabularies();
-        if (vocabularyList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<List<Vocabulary>>(vocabularyServiceImp.findAllVocabularies(), HttpStatus.OK);
     }
 
