@@ -33,8 +33,8 @@ public class VocabularyController {
         vocabulary.setCreatedAt(new Date());
         vocabulary.setUpdatedAt(new Date());
 
-        vocabularyServiceImp.create(vocabulary);
-        return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
+        Vocabulary vocabulary1 = vocabularyServiceImp.create(vocabulary);
+        return new ResponseEntity<Vocabulary>(vocabulary1,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
