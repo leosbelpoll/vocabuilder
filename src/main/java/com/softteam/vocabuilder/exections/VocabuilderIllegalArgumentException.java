@@ -6,10 +6,8 @@ import org.springframework.http.HttpStatus;
 public class VocabuilderIllegalArgumentException extends RuntimeException{
     private String message;
 
-    private HttpStatus httpStatus;
 
-    public VocabuilderIllegalArgumentException(String message, HttpStatus httpStatus) {
+    public VocabuilderIllegalArgumentException(String message) {
         this.message = message;
-        this.httpStatus = httpStatus;
     }
 }

@@ -24,9 +24,8 @@ public class VocabularyController {
 
     @PostMapping
     public ResponseEntity<Vocabulary> createVocabulary(@RequestBody VocabularyDTO vocabularyDTO) {
-        //Internal Server Error al faltar un columna
         if (vocabularyDTO.getTitle() == null || vocabularyDTO.getDescription() == null) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         vocabularyServiceImp.create(vocabularyDTO);
         return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
@@ -34,15 +33,12 @@ public class VocabularyController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable(value = "id") String id, @RequestBody Vocabulary vocabulary) {
-        UUID uuidID = UuidUtil.validateUUIDType(id);
+        UUID uuidID = UuidUtil.getUUID(id);
         Optional<Vocabulary> vocabulary1 = Optional.of(new Vocabulary());
         try {
             vocabulary1 = vocabularyServiceImp.getVocabulary(uuidID);
         } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NO_CONTENT);
-        }
-        if (vocabulary1.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (vocabulary.getTitle() == null) {
             vocabulary.setTitle(vocabulary1.get().getTitle());
@@ -61,12 +57,12 @@ public class VocabularyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Vocabulary>> getVocabulary(@PathVariable(value = "id") String id) {
-        UUID uuidID = UuidUtil.validateUUIDType(id);
+        UUID uuidID = UuidUtil.getUUID(id);
         Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
         try {
             vocabulary = vocabularyServiceImp.getVocabulary(uuidID);
         } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NO_CONTENT);
+            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Optional<Vocabulary>>(vocabulary, HttpStatus.OK);
     }
@@ -82,7 +78,7 @@ public class VocabularyController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") String id) {
-        UUID uuidID = UuidUtil.validateUUIDType(id);
+        UUID uuidID = UuidUtil.getUUID(id);
         Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
         try {
             vocabulary = vocabularyServiceImp.getVocabulary(uuidID);

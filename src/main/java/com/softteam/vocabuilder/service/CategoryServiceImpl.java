@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements ICategoryService{
 
     @Override
     public Optional<Category> getCategory(String id) {
-        UUID uuidID = UuidUtil.validateUUIDType(id);
+        UUID uuidID = UuidUtil.getUUID(id);
         Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements ICategoryService{
 
     @Override
     public void delete(String id) {
-        UUID uuidID = UuidUtil.validateUUIDType(id);
+        UUID uuidID = UuidUtil.getUUID(id);
         Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
