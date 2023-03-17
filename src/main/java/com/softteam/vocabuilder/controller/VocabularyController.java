@@ -24,10 +24,16 @@ public class VocabularyController {
 
     @PostMapping
     public ResponseEntity<Vocabulary> createVocabulary(@RequestBody VocabularyDTO vocabularyDTO) {
+        Vocabulary vocabulary = new Vocabulary();
         if (vocabularyDTO.getTitle() == null || vocabularyDTO.getDescription() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        vocabularyServiceImp.create(vocabularyDTO);
+        vocabulary.setTitle(vocabularyDTO.getTitle());
+        vocabulary.setDescription(vocabularyDTO.getDescription());
+        vocabulary.setCreatedAt(new Date());
+        vocabulary.setUpdatedAt(new Date());
+
+        vocabularyServiceImp.create(vocabulary);
         return new ResponseEntity<Vocabulary>(HttpStatus.CREATED);
     }
 

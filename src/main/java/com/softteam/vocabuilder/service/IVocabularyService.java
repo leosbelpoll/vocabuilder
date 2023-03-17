@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IVocabularyService {
-    Vocabulary create(VocabularyDTO vocabularyDTO);
+    Vocabulary create(Vocabulary vocabulary);
 
     void update(Vocabulary vocabulary);
 

@@ -19,16 +19,7 @@ public class VocabularyServiceImp implements IVocabularyService {
     private VocabularyRepository vocabularyRepository;
 
     @Override
-    public Vocabulary create(VocabularyDTO vocabularyDTO) {
-        //Deberia validar aqui tambien que no hay datos con valor null
-        //o solamente si cumplen con alguna caracteristica del negocio?
-        //deberia enviar algun error aqui en capturarlo en el controller?
-        Vocabulary vocabulary = new Vocabulary();
-        vocabulary.setTitle(vocabularyDTO.getTitle());
-        vocabulary.setDescription(vocabularyDTO.getDescription());
-        vocabulary.setCreatedAt(new Date());
-        vocabulary.setUpdatedAt(new Date());
-
+    public Vocabulary create(Vocabulary vocabulary) {
         return vocabularyRepository.save(vocabulary);
     }
 
