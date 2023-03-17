@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface IVocabularyService {
     Vocabulary create(Vocabulary vocabulary);
 
-    void update(Vocabulary vocabulary);
+    Vocabulary update(Vocabulary vocabulary);
 
     Optional getVocabulary(UUID id);
 

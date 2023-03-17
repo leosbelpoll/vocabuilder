@@ -25,8 +25,8 @@ public class VocabularyServiceImp implements IVocabularyService {
 
     @Transactional
     @Override
-    public void update(Vocabulary vocabulary) {
-        vocabularyRepository.save(vocabulary);
+    public Vocabulary update(Vocabulary vocabulary) {
+        return vocabularyRepository.save(vocabulary);
     }
 
     @Override

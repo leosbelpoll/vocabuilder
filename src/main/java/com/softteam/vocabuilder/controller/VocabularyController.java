@@ -57,8 +57,8 @@ public class VocabularyController {
         vocabulary.setUpdatedAt(new Date());
 
         System.out.println("Datos del vocabulary" + vocabulary);
-        vocabularyServiceImp.update(vocabulary);
-        return new ResponseEntity<Vocabulary>(HttpStatus.OK);
+        Vocabulary vocabulary2 = vocabularyServiceImp.update(vocabulary);
+        return new ResponseEntity<Vocabulary>(vocabulary2,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
