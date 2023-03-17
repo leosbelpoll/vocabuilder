@@ -89,7 +89,7 @@ public class VocabularyController {
         try {
             vocabulary = vocabularyServiceImp.getVocabulary(uuidID);
         } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NO_CONTENT);
+            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
         vocabularyServiceImp.delete(uuidID);
         return new ResponseEntity<Void>(HttpStatus.OK);
