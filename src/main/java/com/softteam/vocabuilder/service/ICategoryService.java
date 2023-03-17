@@ -12,10 +12,10 @@ public interface ICategoryService {
 
     void update(Category category);
 
-    Optional<Category> getCategory(UUID id);
+    Optional<Category> getCategory(String id);
 
     List<Category> findAllCategories();
 
-    void delete(UUID id);
+    void delete(String id);
 
 }

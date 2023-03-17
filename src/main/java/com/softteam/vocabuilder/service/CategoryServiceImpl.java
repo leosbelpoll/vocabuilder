@@ -3,11 +3,11 @@ package com.softteam.vocabuilder.service;
 import com.softteam.vocabuilder.exections.CategoryNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.persistence.repository.CategoryRepository;
+import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,8 +36,9 @@ public class CategoryServiceImpl implements ICategoryService{
     }
 
     @Override
-    public Optional<Category> getCategory(UUID id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
+    public Optional<Category> getCategory(String id) {
+        UUID uuidID = UuidUtil.getUUID(id);
+        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
@@ -50,11 +51,12 @@ public class CategoryServiceImpl implements ICategoryService{
     }
 
     @Override
-    public void delete(UUID id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
+    public void delete(String id) {
+        UUID uuidID = UuidUtil.getUUID(id);
+        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
         if(optionalCategory.isEmpty()){
             throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
         }
-        categoryRepository.deleteById(id);
+        categoryRepository.deleteById(uuidID);
     }
 }
