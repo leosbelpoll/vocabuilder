@@ -7,15 +7,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ICategoryService {
-
     Category create(Category category);
 
-    void update(Category category);
+    Category update(Category category);
 
-    Optional<Category> getCategory(String id);
+    Optional<Category> getCategory(UUID id);
 
     List<Category> findAllCategories();
 
-    void delete(String id);
-
+    void delete(UUID id);
 }

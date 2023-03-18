@@ -56,7 +56,6 @@ public class VocabularyController {
         vocabulary.setCreatedAt(vocabularyOptional.get().getCreatedAt());
         vocabulary.setUpdatedAt(new Date());
 
-        System.out.println("Datos del vocabulary" + vocabulary);
         Vocabulary updateVocabulary = vocabularyServiceImp.update(vocabulary);
         return new ResponseEntity<Vocabulary>(updateVocabulary,HttpStatus.OK);
     }
