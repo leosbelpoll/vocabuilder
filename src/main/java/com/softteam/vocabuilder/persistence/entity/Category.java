@@ -29,6 +29,8 @@ public class Category {
     @Column(name = "description",nullable = false)
     private String description;
 
+    // pepito
+
     @Column(name = "color",nullable = false)
     private String color;
 
