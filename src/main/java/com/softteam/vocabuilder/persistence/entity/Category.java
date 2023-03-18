@@ -29,6 +29,8 @@ public class Category {
     @Column(name = "description",nullable = false)
     private String description;
 
+    // pepito
+
     @Column(name = "color",nullable = false)
     private String color;
 
@@ -37,5 +39,4 @@ public class Category {
 
     @Column(name = "updatedAt",nullable = false)
     private Date updatedAt;
-
 }
