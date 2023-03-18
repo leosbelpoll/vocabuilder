@@ -39,5 +39,9 @@ public class Category {
 
     @Column(name = "updatedAt",nullable = false)
     private Date updatedAt;
+    
+    public String setTitle(String title) {
+        this.title = "hola..." + title;
+    }
 
 }
