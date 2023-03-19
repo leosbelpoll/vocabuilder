@@ -1,6 +1,7 @@
 package com.softteam.vocabuilder.service;
 
 import com.softteam.vocabuilder.exections.CategoryNotFoundException;
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.persistence.repository.CategoryRepository;
 import com.softteam.vocabuilder.util.UuidUtil;
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements ICategoryService{
     public Optional<Category> getCategory(UUID id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if(optionalCategory.isEmpty()){
-            throw new RuntimeException("category not found");
+            throw new ResourceNotFoundException("category not found");
         }
         return optionalCategory;
     }

@@ -1,6 +1,7 @@
 package com.softteam.vocabuilder.controller;
 
 import com.softteam.vocabuilder.exections.CategoryNotFoundException;
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.service.CategoryServiceImpl;
 import com.softteam.vocabuilder.service.dto.CategoryDTO;
@@ -43,7 +44,7 @@ public class CategoryController {
         Optional<Category> newCategory = Optional.of(new Category());
         try {
             newCategory = categoryService.getCategory(uuid);
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException e) {
             throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
         if (category.getTitle() == null) {
@@ -69,7 +70,7 @@ public class CategoryController {
         Optional<Category> optionalCategory = Optional.of(new Category());
         try {
             optionalCategory = categoryService.getCategory(uuid);
-        } catch (RuntimeException e) {
+        } catch (ResourceNotFoundException e) {
             throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Optional<Category>>(optionalCategory, HttpStatus.OK);
