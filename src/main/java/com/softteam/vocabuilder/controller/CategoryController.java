@@ -35,7 +35,7 @@ public class CategoryController {
         category.setCreatedAt(new Date());
         category.setUpdatedAt(new Date());
         Category newCategory = categoryService.create(category);
-        return new ResponseEntity<Category>(newCategory,HttpStatus.CREATED);
+        return new ResponseEntity<Category>(newCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -85,11 +85,10 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable(value = "id") String id) {
         UUID uuid = UuidUtil.getUUID(id);
         try {
-            categoryService.getCategory(uuid);
-        }catch (RuntimeException e){
-            throw new CategoryNotFoundException(e.getMessage(),HttpStatus.NOT_FOUND);
+            categoryService.delete(uuid);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        categoryService.delete(uuid);
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

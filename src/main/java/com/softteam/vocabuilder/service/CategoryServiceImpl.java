@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class CategoryServiceImpl implements ICategoryService{
+public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -24,6 +24,7 @@ public class CategoryServiceImpl implements ICategoryService{
     public Category create(Category category) {
         return categoryRepository.save(category);
     }
+
     @Transactional
     @Override
     public Category update(Category category) {
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements ICategoryService{
     @Override
     public Optional<Category> getCategory(UUID id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if(optionalCategory.isEmpty()){
+        if (optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException("category not found");
         }
         return optionalCategory;
@@ -43,12 +44,13 @@ public class CategoryServiceImpl implements ICategoryService{
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
     }
+
     @Transactional
     @Override
     public void delete(UUID id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if(optionalCategory.isEmpty()){
-            throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
         }
         categoryRepository.deleteById(id);
     }
