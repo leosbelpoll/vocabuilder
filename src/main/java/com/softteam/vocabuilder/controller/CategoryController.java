@@ -70,10 +70,10 @@ public class CategoryController {
         Optional<Category> optionalCategory = Optional.of(new Category());
         try {
             optionalCategory = categoryService.getCategory(uuid);
+            return new ResponseEntity<Optional<Category>>(optionalCategory, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Optional<Category>>(optionalCategory, HttpStatus.OK);
     }
 
     @GetMapping
