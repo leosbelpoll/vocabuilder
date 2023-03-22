@@ -1,12 +1,9 @@
 package com.softteam.vocabuilder.service;
 
-import com.softteam.vocabuilder.exections.CategoryNotFoundException;
 import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.persistence.repository.CategoryRepository;
-import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

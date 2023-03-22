@@ -4,7 +4,8 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class CategoryNotFoundException extends RuntimeException{
+public class CategoryNotFoundException extends RuntimeException {
+
     private String message;
 
     private HttpStatus httpStatus;

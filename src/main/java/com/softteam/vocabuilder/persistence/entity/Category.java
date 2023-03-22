@@ -1,10 +1,7 @@
 package com.softteam.vocabuilder.persistence.entity;
 
-
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "categories")
 public class Category {
+
     @Id
     @GeneratedValue
     @Type(type = "uuid-char")
