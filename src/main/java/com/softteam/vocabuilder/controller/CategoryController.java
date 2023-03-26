@@ -9,6 +9,7 @@ import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -24,11 +25,8 @@ public class CategoryController {
     private CategoryServiceImpl categoryService;
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<Category> createCategory(@RequestBody @Validated CategoryDTO categoryDTO) {
         Category category = new Category();
-        if (categoryDTO.getTitle() == null || categoryDTO.getDescription() == null || categoryDTO.getColor() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         category.setTitle(categoryDTO.getTitle());
         category.setDescription(categoryDTO.getDescription());
         category.setColor(categoryDTO.getColor());

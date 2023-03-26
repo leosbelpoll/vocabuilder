@@ -1,5 +1,6 @@
 package com.softteam.vocabuilder.service;
 
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.exections.VocabularyNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
 import com.softteam.vocabuilder.persistence.repository.VocabularyRepository;
@@ -26,16 +27,50 @@ public class VocabularyServiceImp implements IVocabularyService {
     @Transactional
     @Override
     public Vocabulary update(Vocabulary vocabulary) {
+//        Optional<Vocabulary> optionalFoundVocabulary = vocabularyRepository.findById(vocabulary.getId());
+//        if (optionalFoundVocabulary.isEmpty()) {
+//            throw new ResourceNotFoundException("Vocabulary not found");
+//        }
+//
+//        Vocabulary foundVocabulary = optionalFoundVocabulary.get();
+//        foundVocabulary.setTitle(vocabulary.getTitle());
+//        foundVocabulary.setDescription(vocabulary.getDescription());
+//        foundVocabulary.setUpdatedAt(new Date());
+
+         //return vocabularyRepository.save(foundVocabulary);
         return vocabularyRepository.save(vocabulary);
     }
 
+    @Transactional
     @Override
-    public Optional<Vocabulary> getVocabulary(UUID id) {
-        Optional<Vocabulary> optionalVocabulary = vocabularyRepository.findById(id);
-        if (optionalVocabulary.isEmpty()) {
-            throw new RuntimeException("vocabulary not found");
+    public Vocabulary partialUpdate(Vocabulary vocabulary) throws ResourceNotFoundException{
+        Optional<Vocabulary> optionalFoundVocabulary = vocabularyRepository.findById(vocabulary.getId());
+        if (optionalFoundVocabulary.isEmpty()) {
+            throw new ResourceNotFoundException("Vocabulary not found");
         }
-        return optionalVocabulary;
+
+        Vocabulary foundVocabulary = optionalFoundVocabulary.get();
+        foundVocabulary.setUpdatedAt(new Date());
+
+        if (vocabulary.getTitle() != null) {
+           foundVocabulary.setTitle(vocabulary.getTitle());
+        }
+
+        if (vocabulary.getDescription() != null) {
+            foundVocabulary.setDescription(vocabulary.getDescription());
+        }
+
+        return vocabularyRepository.save(foundVocabulary);
+    }
+
+    @Override
+    public Vocabulary getVocabulary(UUID id) throws ResourceNotFoundException {
+        Optional<Vocabulary> vocabulary = vocabularyRepository.findById(id);
+        if (vocabulary.isEmpty()) {
+            throw new ResourceNotFoundException("Vocabulary not found");
+        }
+
+        return vocabulary.get();
     }
 
     @Override
