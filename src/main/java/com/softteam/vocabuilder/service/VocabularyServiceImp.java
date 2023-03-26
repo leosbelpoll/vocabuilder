@@ -27,18 +27,17 @@ public class VocabularyServiceImp implements IVocabularyService {
     @Transactional
     @Override
     public Vocabulary update(Vocabulary vocabulary) {
-//        Optional<Vocabulary> optionalFoundVocabulary = vocabularyRepository.findById(vocabulary.getId());
-//        if (optionalFoundVocabulary.isEmpty()) {
-//            throw new ResourceNotFoundException("Vocabulary not found");
-//        }
-//
-//        Vocabulary foundVocabulary = optionalFoundVocabulary.get();
-//        foundVocabulary.setTitle(vocabulary.getTitle());
-//        foundVocabulary.setDescription(vocabulary.getDescription());
-//        foundVocabulary.setUpdatedAt(new Date());
+        Optional<Vocabulary> optionalFoundVocabulary = vocabularyRepository.findById(vocabulary.getId());
+        if (optionalFoundVocabulary.isEmpty()) {
+            throw new ResourceNotFoundException("Vocabulary not found");
+        }
 
-         //return vocabularyRepository.save(foundVocabulary);
-        return vocabularyRepository.save(vocabulary);
+        Vocabulary foundVocabulary = optionalFoundVocabulary.get();
+        foundVocabulary.setTitle(vocabulary.getTitle());
+        foundVocabulary.setDescription(vocabulary.getDescription());
+        foundVocabulary.setUpdatedAt(new Date());
+
+         return vocabularyRepository.save(foundVocabulary);
     }
 
     @Transactional
