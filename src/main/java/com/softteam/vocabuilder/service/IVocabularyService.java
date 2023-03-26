@@ -1,5 +1,6 @@
 package com.softteam.vocabuilder.service;
 
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
 import com.softteam.vocabuilder.service.dto.VocabularyDTO;
 
@@ -12,7 +13,9 @@ public interface IVocabularyService {
 
     Vocabulary update(Vocabulary vocabulary);
 
-    Optional getVocabulary(UUID id);
+    Vocabulary partialUpdate(Vocabulary vocabulary) throws ResourceNotFoundException;
+
+    Vocabulary getVocabulary(UUID id) throws ResourceNotFoundException;
 
     List<Vocabulary> findAllVocabularies();
 
