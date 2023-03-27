@@ -5,6 +5,7 @@ import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.service.CategoryServiceImpl;
 import com.softteam.vocabuilder.service.dto.CategoryDTO;
+import com.softteam.vocabuilder.service.dto.UpdateCategoryRequestDTO;
 import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -32,45 +32,61 @@ public class CategoryController {
         category.setColor(categoryDTO.getColor());
         category.setCreatedAt(new Date());
         category.setUpdatedAt(new Date());
+
         Category newCategory = categoryService.create(category);
         return new ResponseEntity<Category>(newCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable(value = "id") String id, @RequestBody Category category) {
+    public ResponseEntity<?> updateCategory(@PathVariable(value = "id") String id, @RequestBody @Validated CategoryDTO categoryDTO) {
         UUID uuid = UuidUtil.getUUID(id);
-        Optional<Category> newCategory = Optional.of(new Category());
-        try {
-            newCategory = categoryService.getCategory(uuid);
-        } catch (ResourceNotFoundException e) {
-            throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-        if (category.getTitle() == null) {
-            category.setTitle(newCategory.get().getTitle());
-        }
-        if (category.getDescription() == null) {
-            category.setDescription(newCategory.get().getDescription());
-        }
-        if (category.getColor() == null) {
-            category.setColor(newCategory.get().getColor());
-        }
-        category.setUpdatedAt(new Date());
-        category.setCreatedAt(newCategory.get().getCreatedAt());
 
+        Category category = new Category();
+        category.setTitle(categoryDTO.getTitle());
+        category.setDescription(categoryDTO.getDescription());
+        category.setColor(categoryDTO.getColor());
         category.setId(uuid);
-        Category updateCategory = categoryService.update(category);
-        return new ResponseEntity<Category>(updateCategory, HttpStatus.OK);
+
+        try {
+            Category updateCategory = categoryService.update(category);
+            return new ResponseEntity<Category>(updateCategory, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>("Oops, we couldn't find the category", HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("Sorry, something wrong happened, we're working to solve it", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> partialUpdateCategory(@PathVariable(value = "id") String id, @RequestBody UpdateCategoryRequestDTO categoryDTO) {
+        UUID uuid = UuidUtil.getUUID(id);
+
+        Category category = new Category();
+        category.setTitle(categoryDTO.getTitle());
+        category.setDescription(categoryDTO.getDescription());
+        category.setColor(categoryDTO.getColor());
+        category.setId(uuid);
+
+        try {
+            Category updateCategory = categoryService.partialUpdate(category);
+            return new ResponseEntity<Category>(updateCategory, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>("Oops, we couldn't find the category", HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("Sorry, something wrong happened, we're working to solve it", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Category>> getCategory(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Category> getCategory(@PathVariable(value = "id") String id) {
         UUID uuid = UuidUtil.getUUID(id);
-        Optional<Category> optionalCategory = Optional.of(new Category());
+        Category category = new Category();
+
         try {
-            optionalCategory = categoryService.getCategory(uuid);
-            return new ResponseEntity<Optional<Category>>(optionalCategory, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
+            category = categoryService.getCategory(uuid);
+            return new ResponseEntity<Category>(category, HttpStatus.OK);
+        } catch (ResourceNotFoundException exception) {
+            throw new CategoryNotFoundException("Oops, we couldn't find the category", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -82,11 +98,12 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable(value = "id") String id) {
         UUID uuid = UuidUtil.getUUID(id);
+
         try {
             categoryService.delete(uuid);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
-            throw new CategoryNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
+            throw new CategoryNotFoundException("Oops, we couldn't find the category", HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.softteam.vocabuilder.service;
 
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 
 import java.util.List;
@@ -11,7 +12,9 @@ public interface ICategoryService {
 
     Category update(Category category);
 
-    Optional<Category> getCategory(UUID id);
+    Category partialUpdate(Category category) throws ResourceNotFoundException;
+
+    Category getCategory(UUID id) throws ResourceNotFoundException;
 
     List<Category> findAllCategories();
 

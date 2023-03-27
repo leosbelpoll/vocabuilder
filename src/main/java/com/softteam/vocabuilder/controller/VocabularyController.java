@@ -71,6 +71,7 @@ public class VocabularyController {
     public ResponseEntity<Vocabulary> getVocabulary(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
         Vocabulary vocabulary = new Vocabulary();
+
         try {
             vocabulary = vocabularyService.getVocabulary(uuidID);
             return new ResponseEntity<Vocabulary>(vocabulary, HttpStatus.OK);
@@ -89,6 +90,7 @@ public class VocabularyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
+
         try {
             vocabularyService.delete(uuidID);
             return new ResponseEntity<Void>(HttpStatus.OK);

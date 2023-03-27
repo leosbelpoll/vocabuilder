@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,16 +26,50 @@ public class CategoryServiceImpl implements ICategoryService {
     @Transactional
     @Override
     public Category update(Category category) {
-        return categoryRepository.save(category);
+        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
+        }
+
+        Category foundCategory = optionalCategory.get();
+        foundCategory.setTitle(category.getTitle());
+        foundCategory.setDescription(category.getDescription());
+        foundCategory.setColor(category.getColor());
+        foundCategory.setUpdatedAt(new Date());
+
+        return categoryRepository.save(foundCategory);
     }
 
     @Override
-    public Optional<Category> getCategory(UUID id) {
+    public Category partialUpdate(Category category) throws ResourceNotFoundException {
+        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
+        }
+
+        Category foundCategory = optionalCategory.get();
+        if (category.getTitle() != null) {
+            foundCategory.setTitle(category.getTitle());
+        }
+        if (category.getDescription() != null) {
+            foundCategory.setDescription(category.getDescription());
+        }
+        if (category.getColor() != null) {
+            foundCategory.setColor(category.getColor());
+        }
+        foundCategory.setUpdatedAt(new Date());
+
+        return categoryRepository.save(foundCategory) ;
+    }
+
+    @Override
+    public Category getCategory(UUID id) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException("category not found");
         }
-        return optionalCategory;
+
+        return optionalCategory.get();
     }
 
     @Override
@@ -49,6 +84,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException("category not found");
         }
+
         categoryRepository.deleteById(id);
     }
 }
