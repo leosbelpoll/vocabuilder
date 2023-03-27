@@ -11,6 +11,7 @@ public class VocabularyDTO {
     private UUID id;
     @NotNull(message = "Title is required")
     private String title;
+
     @NotNull(message = "Description is required")
     private String description;
 }

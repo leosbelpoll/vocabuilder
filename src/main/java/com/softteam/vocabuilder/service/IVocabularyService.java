@@ -2,10 +2,8 @@ package com.softteam.vocabuilder.service;
 
 import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
-import com.softteam.vocabuilder.service.dto.VocabularyDTO;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IVocabularyService {

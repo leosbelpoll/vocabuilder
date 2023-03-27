@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -34,7 +33,7 @@ public class VocabularyController {
         vocabulary.setUpdatedAt(new Date());
 
         Vocabulary newVocabulary = vocabularyService.create(vocabulary);
-        return new ResponseEntity<Vocabulary>(newVocabulary,HttpStatus.CREATED);
+        return new ResponseEntity<Vocabulary>(newVocabulary, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
@@ -69,15 +68,16 @@ public class VocabularyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vocabulary>> getVocabulary(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Vocabulary> getVocabulary(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
+        Vocabulary vocabulary = new Vocabulary();
         try {
-            // vocabulary = vocabularyService.getVocabulary(uuidID);
-        } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            vocabulary = vocabularyService.getVocabulary(uuidID);
+            return new ResponseEntity<Vocabulary>(vocabulary, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new VocabularyNotFoundException("Oops, we couldn't find the vocabulary", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Optional<Vocabulary>>(vocabulary, HttpStatus.OK);
+        //deberia poner otro catch para si pasa algo que no estemos atrapando
     }
 
     @GetMapping
@@ -89,13 +89,11 @@ public class VocabularyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
         try {
-            // vocabulary = vocabularyService.getVocabulary(uuidID);
-        } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
+            vocabularyService.delete(uuidID);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new VocabularyNotFoundException("Oops, we couldn't find the vocabulary", HttpStatus.NOT_FOUND);
         }
-        vocabularyService.delete(uuidID);
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

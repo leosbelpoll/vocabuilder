@@ -37,12 +37,12 @@ public class VocabularyServiceImp implements IVocabularyService {
         foundVocabulary.setDescription(vocabulary.getDescription());
         foundVocabulary.setUpdatedAt(new Date());
 
-         return vocabularyRepository.save(foundVocabulary);
+        return vocabularyRepository.save(foundVocabulary);
     }
 
     @Transactional
     @Override
-    public Vocabulary partialUpdate(Vocabulary vocabulary) throws ResourceNotFoundException{
+    public Vocabulary partialUpdate(Vocabulary vocabulary) throws ResourceNotFoundException {
         Optional<Vocabulary> optionalFoundVocabulary = vocabularyRepository.findById(vocabulary.getId());
         if (optionalFoundVocabulary.isEmpty()) {
             throw new ResourceNotFoundException("Vocabulary not found");
@@ -52,7 +52,7 @@ public class VocabularyServiceImp implements IVocabularyService {
         foundVocabulary.setUpdatedAt(new Date());
 
         if (vocabulary.getTitle() != null) {
-           foundVocabulary.setTitle(vocabulary.getTitle());
+            foundVocabulary.setTitle(vocabulary.getTitle());
         }
 
         if (vocabulary.getDescription() != null) {
@@ -80,6 +80,11 @@ public class VocabularyServiceImp implements IVocabularyService {
     @Transactional
     @Override
     public void delete(UUID id) {
+        Optional<Vocabulary> vocabulary = vocabularyRepository.findById(id);
+        if (vocabulary.isEmpty()) {
+            throw new ResourceNotFoundException("Vocabulary not found");
+        }
+
         vocabularyRepository.deleteById(id);
     }
 }
