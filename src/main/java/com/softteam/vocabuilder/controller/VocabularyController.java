@@ -37,9 +37,12 @@ public class VocabularyController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> partialUpdateVocabulary(@PathVariable(value = "id") String id, @RequestBody Vocabulary vocabulary) {
+    public ResponseEntity<?> partialUpdateVocabulary(@PathVariable(value = "id") String id, @RequestBody UpdateVocabularyRequestDTO vocabularyDTO) {
         UUID uuidID = UuidUtil.getUUID(id);
+        Vocabulary vocabulary = new Vocabulary();
         vocabulary.setId(uuidID);
+        vocabulary.setTitle(vocabularyDTO.getTitle());
+        vocabulary.setDescription(vocabularyDTO.getDescription());
 
         try {
             Vocabulary updatedVocabulary = vocabularyService.partialUpdate(vocabulary);
