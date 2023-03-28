@@ -1,48 +1,75 @@
 package com.softteam.vocabuilder.service;
 
-import com.softteam.vocabuilder.exections.CategoryNotFoundException;
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Category;
 import com.softteam.vocabuilder.persistence.repository.CategoryRepository;
-import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class CategoryServiceImpl implements ICategoryService{
+public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @Override
     public Category create(Category category) {
-        categoryRepository.save(category);
-        List<Category> categoryList = categoryRepository.findAll();
-        System.out.println("categoryList"+category.getId());
-        return category;
+        return categoryRepository.save(category);
+    }
+
+    @Transactional
+    @Override
+    public Category update(Category category) {
+        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
+        }
+
+        Category foundCategory = optionalCategory.get();
+        foundCategory.setTitle(category.getTitle());
+        foundCategory.setDescription(category.getDescription());
+        foundCategory.setColor(category.getColor());
+        foundCategory.setUpdatedAt(new Date());
+
+        return categoryRepository.save(foundCategory);
     }
 
     @Override
-    public void update(Category category) {
-        try {
-            categoryRepository.save(category);
-        }catch (Exception e){
-            throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
+    public Category partialUpdate(Category category) throws ResourceNotFoundException {
+        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
         }
+
+        Category foundCategory = optionalCategory.get();
+        if (category.getTitle() != null) {
+            foundCategory.setTitle(category.getTitle());
+        }
+        if (category.getDescription() != null) {
+            foundCategory.setDescription(category.getDescription());
+        }
+        if (category.getColor() != null) {
+            foundCategory.setColor(category.getColor());
+        }
+        foundCategory.setUpdatedAt(new Date());
+
+        return categoryRepository.save(foundCategory) ;
     }
 
     @Override
-    public Optional<Category> getCategory(String id) {
-        UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
-        if(optionalCategory.isEmpty()){
-            throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
+    public Category getCategory(UUID id) {
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
         }
-        return optionalCategory;
+
+        return optionalCategory.get();
     }
 
     @Override
@@ -50,13 +77,14 @@ public class CategoryServiceImpl implements ICategoryService{
         return categoryRepository.findAll();
     }
 
+    @Transactional
     @Override
-    public void delete(String id) {
-        UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Category> optionalCategory = categoryRepository.findById(uuidID);
-        if(optionalCategory.isEmpty()){
-            throw new CategoryNotFoundException("category not found",HttpStatus.NOT_FOUND);
+    public void delete(UUID id) {
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("category not found");
         }
-        categoryRepository.deleteById(uuidID);
+
+        categoryRepository.deleteById(id);
     }
 }

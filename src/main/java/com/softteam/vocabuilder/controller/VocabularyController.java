@@ -1,18 +1,20 @@
 package com.softteam.vocabuilder.controller;
 
+import com.softteam.vocabuilder.exections.ResourceNotFoundException;
 import com.softteam.vocabuilder.exections.VocabularyNotFoundException;
 import com.softteam.vocabuilder.persistence.entity.Vocabulary;
-import com.softteam.vocabuilder.service.VocabularyServiceImp;
+import com.softteam.vocabuilder.service.IVocabularyService;
+import com.softteam.vocabuilder.service.dto.UpdateVocabularyRequestDTO;
 import com.softteam.vocabuilder.service.dto.VocabularyDTO;
 import com.softteam.vocabuilder.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -20,75 +22,83 @@ import java.util.UUID;
 public class VocabularyController {
 
     @Autowired
-    private VocabularyServiceImp vocabularyServiceImp;
+    private IVocabularyService vocabularyService;
 
     @PostMapping
-    public ResponseEntity<Vocabulary> createVocabulary(@RequestBody VocabularyDTO vocabularyDTO) {
+    public ResponseEntity<Vocabulary> createVocabulary(@RequestBody @Validated VocabularyDTO vocabularyDTO) {
         Vocabulary vocabulary = new Vocabulary();
-        if (vocabularyDTO.getTitle() == null || vocabularyDTO.getDescription() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         vocabulary.setTitle(vocabularyDTO.getTitle());
         vocabulary.setDescription(vocabularyDTO.getDescription());
         vocabulary.setCreatedAt(new Date());
         vocabulary.setUpdatedAt(new Date());
 
-        Vocabulary newVocabulary = vocabularyServiceImp.create(vocabulary);
-        return new ResponseEntity<Vocabulary>(newVocabulary,HttpStatus.CREATED);
+        Vocabulary newVocabulary = vocabularyService.create(vocabulary);
+        return new ResponseEntity<Vocabulary>(newVocabulary, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> partialUpdateVocabulary(@PathVariable(value = "id") String id, @RequestBody UpdateVocabularyRequestDTO vocabularyDTO) {
+        UUID uuidID = UuidUtil.getUUID(id);
+        Vocabulary vocabulary = new Vocabulary();
+        vocabulary.setId(uuidID);
+        vocabulary.setTitle(vocabularyDTO.getTitle());
+        vocabulary.setDescription(vocabularyDTO.getDescription());
+
+        try {
+            Vocabulary updatedVocabulary = vocabularyService.partialUpdate(vocabulary);
+            return new ResponseEntity<>(updatedVocabulary, HttpStatus.OK);
+        } catch (ResourceNotFoundException exception) {
+            return new ResponseEntity<>("Oops, we couldn't find the vocabulary", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vocabulary> updateVocabulary(@PathVariable(value = "id") String id, @RequestBody Vocabulary vocabulary) {
+    public ResponseEntity<?> updateVocabulary(@PathVariable(value = "id") String id, @RequestBody @Validated UpdateVocabularyRequestDTO vocabularyDto) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabularyOptional = Optional.of(new Vocabulary());
-        try {
-            vocabularyOptional = vocabularyServiceImp.getVocabulary(uuidID);
-        } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        if (vocabulary.getTitle() == null) {
-            vocabulary.setTitle(vocabularyOptional.get().getTitle());
-        }
-        if (vocabulary.getDescription() == null) {
-            vocabulary.setDescription(vocabularyOptional.get().getDescription());
-        }
+        Vocabulary vocabulary = new Vocabulary();
         vocabulary.setId(uuidID);
-        vocabulary.setCreatedAt(vocabularyOptional.get().getCreatedAt());
-        vocabulary.setUpdatedAt(new Date());
+        vocabulary.setTitle(vocabularyDto.getTitle());
+        vocabulary.setDescription(vocabularyDto.getDescription());
 
-        System.out.println("Datos del vocabulary" + vocabulary);
-        Vocabulary updateVocabulary = vocabularyServiceImp.update(vocabulary);
-        return new ResponseEntity<Vocabulary>(updateVocabulary,HttpStatus.OK);
+        try {
+            Vocabulary updatedVocabulary = vocabularyService.update(vocabulary);
+            return new ResponseEntity<>(updatedVocabulary, HttpStatus.OK);
+        } catch (ResourceNotFoundException exception) {
+            return new ResponseEntity<>("Oops, we couldn't find the vocabulary", HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException exception) {
+            return new ResponseEntity<>("Sorry, something wrong happened, we're working to solve it", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vocabulary>> getVocabulary(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Vocabulary> getVocabulary(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
+        Vocabulary vocabulary = new Vocabulary();
+
         try {
-            vocabulary = vocabularyServiceImp.getVocabulary(uuidID);
-        } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            vocabulary = vocabularyService.getVocabulary(uuidID);
+            return new ResponseEntity<Vocabulary>(vocabulary, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new VocabularyNotFoundException("Oops, we couldn't find the vocabulary", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Optional<Vocabulary>>(vocabulary, HttpStatus.OK);
+        //deberia poner otro catch para si pasa algo que no estemos atrapando
     }
 
     @GetMapping
     public ResponseEntity<List<Vocabulary>> listVocabulary() {
-        List<Vocabulary> vocabularyList = vocabularyServiceImp.findAllVocabularies();
+        List<Vocabulary> vocabularyList = vocabularyService.findAllVocabularies();
         return new ResponseEntity<List<Vocabulary>>(vocabularyList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVocabuilder(@PathVariable(value = "id") String id) {
         UUID uuidID = UuidUtil.getUUID(id);
-        Optional<Vocabulary> vocabulary = Optional.of(new Vocabulary());
+
         try {
-            vocabulary = vocabularyServiceImp.getVocabulary(uuidID);
-        } catch (RuntimeException e) {
-            throw new VocabularyNotFoundException(e.getMessage(), HttpStatus.NOT_FOUND);
+            vocabularyService.delete(uuidID);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            throw new VocabularyNotFoundException("Oops, we couldn't find the vocabulary", HttpStatus.NOT_FOUND);
         }
-        vocabularyServiceImp.delete(uuidID);
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
